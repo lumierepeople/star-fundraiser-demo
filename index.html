@@ -84,25 +84,41 @@
 
   .star-dot {
     fill: var(--star-dim);
-    transition: opacity 0.4s ease;
+    transition: opacity 0.3s ease;
   }
   .star-sparkle {
     fill: var(--star-lit);
     opacity: 0;
-    transform-box: fill-box;
-    transform-origin: center;
-    transform: scale(0.2);
-    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(.3,1.6,.4,1);
+    transform: scale(1);
   }
   .star-halo {
     fill: var(--star-lit-glow);
     opacity: 0;
     filter: blur(5px);
-    transition: opacity 0.6s ease;
+    transform: scale(1);
   }
   .star-node.lit .star-dot { opacity: 0; }
-  .star-node.lit .star-sparkle { opacity: 1; transform: scale(1); }
-  .star-node.lit .star-halo { opacity: 0.55; }
+  .star-node.lit .star-sparkle { animation: ignite 1.5s ease-in-out forwards; }
+  .star-node.lit .star-halo { animation: ignite-glow 1.5s ease-in-out forwards; }
+
+  /* scale from each star's own fixed point, not the SVG's corner —
+     "transform-box: fill-box" isn't reliable enough across browsers for this */
+  #star1 .star-sparkle, #star1 .star-halo { transform-origin: 200px 260px; }
+  #star2 .star-sparkle, #star2 .star-halo { transform-origin: 560px 110px; }
+  #star3 .star-sparkle, #star3 .star-halo { transform-origin: 940px 220px; }
+
+  /* the star stays put — it only grows about 30% larger while it becomes
+     visible, then eases back down to its normal, steady size */
+  @keyframes ignite {
+    0%   { opacity: 0; transform: scale(1); }
+    50%  { opacity: 1; transform: scale(1.3); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes ignite-glow {
+    0%   { opacity: 0;    transform: scale(1); }
+    50%  { opacity: 1;    transform: scale(1.3); }
+    100% { opacity: 0.55; transform: scale(1); }
+  }
 
   .star-label {
     font-family: "Inter", sans-serif;
@@ -295,7 +311,8 @@
   @media (prefers-reduced-motion: reduce) {
     .bg-stars span { animation: none; opacity: 0.4; }
     .fill { transition: none; }
-    .star-sparkle { transition: opacity 0.3s ease; }
+    .star-node.lit .star-sparkle { animation: none; opacity: 1; transform: scale(1); }
+    .star-node.lit .star-halo { animation: none; opacity: 0.55; transform: scale(1); }
   }
 </style>
 

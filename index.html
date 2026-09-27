@@ -32,37 +32,38 @@
     position: relative;
   }
 
-  .container {
-    max-width: 680px;
-    margin: 0;
-    padding-inline: 20px;
+  /* ---------------- ambient stars, whole page ---------------- */
+  .bg-stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
   }
-
-  /* ---------------- hero / sky ---------------- */
-  .hero {
-    position: relative;
-    height: clamp(340px, 52vw, 480px);
-    background: radial-gradient(130% 90% at 50% 0%, #17141c 0%, #0c0a10 55%, #08070a 100%);
-    overflow: hidden;
-  }
-
-  .hero-stars { position: absolute; inset: 0; }
-  .hero-stars span {
+  .bg-stars span {
     position: absolute;
     border-radius: 50%;
-    background: rgba(255,255,255,0.8);
-    animation: twinkle 4.2s ease-in-out infinite;
+    background: rgba(255,255,255,0.6);
+    animation: twinkle 4.5s ease-in-out infinite;
   }
   @keyframes twinkle {
     0%, 100% { opacity: 0.15; }
     50% { opacity: 0.85; }
   }
 
+  /* ---------------- hero: constellation only, no text on top ---------------- */
+  .hero {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: clamp(220px, 30vw, 400px);
+    overflow: hidden;
+  }
+
   .hero-fade {
     position: absolute;
     inset: auto 0 0 0;
-    height: 55%;
-    background: linear-gradient(180deg, rgba(9,9,11,0) 0%, var(--bg) 92%);
+    height: 22%;
+    background: linear-gradient(180deg, rgba(9,9,11,0) 0%, var(--bg) 100%);
     pointer-events: none;
   }
 
@@ -105,18 +106,31 @@
 
   .star-label {
     font-family: "Inter", sans-serif;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
     fill: var(--text-faint);
-    letter-spacing: 0.03em;
+    letter-spacing: 0.02em;
     transition: fill 0.4s ease;
   }
   .star-node.lit .star-label { fill: var(--accent-2); }
 
-  .hero-tag {
-    position: absolute;
-    top: 20px;
-    left: 20px;
+  /* ---------------- content: two columns, no overlap with hero ---------------- */
+  .content-grid {
+    position: relative;
+    z-index: 1;
+    max-width: 1120px;
+    margin: 0;
+    padding: 40px 20px 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: center;
+    gap: 28px 64px;
+  }
+
+  .col-left { text-align: left; }
+  .col-right { text-align: right; }
+
+  .demo-tag {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -125,38 +139,18 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text-dim);
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: var(--panel);
+    border: 1px solid var(--track);
     padding: 6px 12px;
     border-radius: 999px;
-    backdrop-filter: blur(4px);
+    margin-bottom: 24px;
   }
-  .hero-tag::before {
+  .demo-tag::before {
     content: "";
     width: 6px;
     height: 6px;
     border-radius: 50%;
     background: var(--accent);
-  }
-
-  .hero-percent {
-    position: absolute;
-    top: 18px;
-    right: 20px;
-    font-family: "Archivo Black", sans-serif;
-    font-size: 20px;
-    color: var(--accent);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .hero-content {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 0 20px 22px;
-    max-width: 760px;
-    margin: 0 auto;
   }
 
   .eyebrow {
@@ -170,11 +164,11 @@
 
   h1 {
     font-family: "Archivo Black", "Inter", sans-serif;
-    font-size: clamp(32px, 7vw, 58px);
-    line-height: 0.98;
+    font-size: clamp(30px, 4.2vw, 50px);
+    line-height: 1.0;
     letter-spacing: -0.01em;
     text-transform: uppercase;
-    margin: 0 0 12px;
+    margin: 0 0 14px;
     text-wrap: balance;
   }
 
@@ -182,12 +176,9 @@
     font-size: 16px;
     line-height: 1.5;
     color: var(--text-dim);
-    max-width: 46ch;
-    margin: 0;
+    max-width: 42ch;
+    margin: 0 0 30px;
   }
-
-  /* ---------------- body ---------------- */
-  .body-top { padding-top: 32px; }
 
   .stat-row {
     display: flex;
@@ -231,7 +222,7 @@
     display: flex;
     gap: 14px;
     flex-wrap: wrap;
-    margin-bottom: 40px;
+    margin-bottom: 28px;
   }
 
   .cta {
@@ -269,18 +260,17 @@
     flex-wrap: wrap;
     font-size: 13px;
     color: var(--text-dim);
-    padding: 16px 0;
+    padding-top: 16px;
     border-top: 1px solid var(--track);
-    border-bottom: 1px solid var(--track);
-    margin-bottom: 24px;
   }
   .legend b { color: var(--text); }
 
   .note {
     font-size: 13px;
-    line-height: 1.6;
+    line-height: 1.65;
     color: var(--text-faint);
-    max-width: 60ch;
+    max-width: 42ch;
+    margin: 0 0 0 auto;
   }
   .note code {
     background: var(--panel);
@@ -291,21 +281,28 @@
     color: var(--text-dim);
   }
 
+  @media (max-width: 860px) {
+    .content-grid { grid-template-columns: 1fr; }
+    .col-left { grid-row: 1; }
+    .col-right { grid-row: 2; text-align: left; }
+    .note { margin: 0; }
+  }
+
   @media (max-width: 480px) {
     .stat-row { align-items: flex-start; flex-direction: column; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero-stars span { animation: none; opacity: 0.4; }
+    .bg-stars span { animation: none; opacity: 0.4; }
     .fill { transition: none; }
     .star-sparkle { transition: opacity 0.3s ease; }
   }
 </style>
 
-<div class="hero">
-  <div class="hero-stars" id="bgStars"></div>
+<div class="bg-stars" id="bgStars"></div>
 
-  <svg class="constellation" viewBox="0 0 1000 460" preserveAspectRatio="xMidYMin slice">
+<div class="hero">
+  <svg class="constellation" viewBox="0 0 1200 380" preserveAspectRatio="xMidYMid meet">
     <defs>
       <symbol id="sparkle" viewBox="-16 -16 32 32">
         <path d="M0,-15 C1.6,-4.4 4.4,-1.6 15,0 C4.4,1.6 1.6,4.4 0,15 C-1.6,4.4 -4.4,1.6 -15,0 C-4.4,-1.6 -1.6,-4.4 0,-15 Z"/>
@@ -313,77 +310,77 @@
     </defs>
 
     <!-- connecting lines, trimmed so they don't touch the star marks -->
-    <line id="line12" class="const-line" x1="183" y1="191.8" x2="397" y2="138.2" stroke-dasharray="220.6" stroke-dashoffset="220.6"/>
-    <line id="line23" class="const-line" x1="461.5" y1="142.8" x2="668.5" y2="227.2" stroke-dasharray="223.6" stroke-dashoffset="223.6"/>
+    <line id="line12" class="const-line" x1="225.8" y1="249.2" x2="534.2" y2="120.8" stroke-dasharray="334.1" stroke-dashoffset="334.1"/>
+    <line id="line23" class="const-line" x1="586.9" y1="117.8" x2="913.1" y2="212.2" stroke-dasharray="339.6" stroke-dashoffset="339.6"/>
 
     <g class="star-node" id="star1">
-      <circle class="star-halo" cx="150" cy="200" r="20"/>
-      <circle class="star-dot" cx="150" cy="200" r="2.6"/>
-      <use href="#sparkle" class="star-sparkle" x="140" y="190" width="20" height="20"/>
-      <text class="star-label" x="150" y="235" text-anchor="middle">10 000 ₴</text>
+      <circle class="star-halo" cx="200" cy="260" r="18"/>
+      <circle class="star-dot" cx="200" cy="260" r="3"/>
+      <use href="#sparkle" class="star-sparkle" x="189" y="249" width="22" height="22"/>
+      <text class="star-label" x="200" y="296" text-anchor="middle">10 000 ₴</text>
     </g>
     <g class="star-node" id="star2">
-      <circle class="star-halo" cx="430" cy="130" r="20"/>
-      <circle class="star-dot" cx="430" cy="130" r="2.6"/>
-      <use href="#sparkle" class="star-sparkle" x="420" y="120" width="20" height="20"/>
-      <text class="star-label" x="430" y="105" text-anchor="middle">20 000 ₴</text>
+      <circle class="star-halo" cx="560" cy="110" r="18"/>
+      <circle class="star-dot" cx="560" cy="110" r="3"/>
+      <use href="#sparkle" class="star-sparkle" x="549" y="99" width="22" height="22"/>
+      <text class="star-label" x="560" y="80" text-anchor="middle">20 000 ₴</text>
     </g>
     <g class="star-node" id="star3">
-      <circle class="star-halo" cx="700" cy="240" r="20"/>
-      <circle class="star-dot" cx="700" cy="240" r="2.6"/>
-      <use href="#sparkle" class="star-sparkle" x="690" y="230" width="20" height="20"/>
-      <text class="star-label" x="700" y="275" text-anchor="middle">30 000 ₴ — ціль</text>
+      <circle class="star-halo" cx="940" cy="220" r="18"/>
+      <circle class="star-dot" cx="940" cy="220" r="3"/>
+      <use href="#sparkle" class="star-sparkle" x="929" y="209" width="22" height="22"/>
+      <text class="star-label" x="940" y="256" text-anchor="middle">30 000 ₴ — ціль</text>
     </g>
   </svg>
-
   <div class="hero-fade"></div>
-  <div class="hero-tag">Демо-приклад анімації</div>
-  <div class="hero-percent" id="skyPercent">0%</div>
+</div>
 
-  <div class="hero-content">
+<div class="content-grid">
+  <div class="col-left">
+    <div class="demo-tag">Демо-приклад анімації</div>
     <p class="eyebrow">Збір на 30 000 ₴</p>
     <h1>Запалюємо небо разом</h1>
     <p class="subtitle">Що більше донатів — то більше світла. Кожна нова зірка наближає нас до цілі.</p>
-  </div>
-</div>
 
-<div class="container body-top">
-  <div class="stat-row">
-    <div class="amount" id="amountText">0 ₴</div>
-    <div class="goal-line"><span id="percentText">0%</span> / 30 000 ₴</div>
-  </div>
-  <div class="track"><div class="fill" id="fillBar"></div></div>
+    <div class="stat-row">
+      <div class="amount" id="amountText">0 ₴</div>
+      <div class="goal-line"><span id="percentText">0%</span> / 30 000 ₴</div>
+    </div>
+    <div class="track"><div class="fill" id="fillBar"></div></div>
 
-  <div class="cta-row">
-    <button class="cta" type="button" id="ctaBtn">Підтримати збір ↘</button>
-    <button class="cta ghost" type="button" id="restartBtn">Прогнати демо ще раз</button>
-  </div>
+    <div class="cta-row">
+      <button class="cta" type="button" id="ctaBtn">Підтримати збір ↘</button>
+      <button class="cta ghost" type="button" id="restartBtn">Прогнати демо ще раз</button>
+    </div>
 
-  <div class="legend">
-    <span>Тьмяна крапка — <b>ще не зібрано</b></span>
-    <span>Зірка засвітилась — <b>поріг пройдено</b></span>
-    <span>Лінія з'являється — <b>разом із наступною зіркою</b></span>
+    <div class="legend">
+      <span>Тьмяна крапка — <b>ще не зібрано</b></span>
+      <span>Зірка засвітилась — <b>поріг пройдено</b></span>
+      <span>Лінія з'являється — <b>разом із наступною зіркою</b></span>
+    </div>
   </div>
 
-  <p class="note">
-    Це демонстраційний таймінг для показу розробнику: сума росте від <code>0</code> до <code>30 000 ₴</code> за
-    12 секунд, кроком <code>+10 000 ₴</code> кожні 4 секунди — по одній зірці за крок. Лінії між зірками навмисно
-    не торкаються самих зірок — так само, як у справжніх картах сузір'їв. У бойовій версії ці цифри заміняться на
-    реальну ціль, реальний крок і дані з Monobank API, а швидкість оновлення визначить бекенд (див. ТЗ, розділи 4–5).
-  </p>
+  <div class="col-right">
+    <p class="note">
+      Це демонстраційний таймінг для показу розробнику: сума росте від <code>0</code> до <code>30 000 ₴</code> за
+      12 секунд, кроком <code>+10 000 ₴</code> кожні 4 секунди — по одній зірці за крок. Лінії між зірками навмисно
+      не торкаються самих зірок — так само, як у справжніх картах сузір'їв. У бойовій версії ці цифри заміняться на
+      реальну ціль, реальний крок і дані з Monobank API, а швидкість оновлення визначить бекенд (див. ТЗ, розділи 4–5).
+    </p>
+  </div>
 </div>
 
 <script>
 (function () {
-  // ambient background stars across the hero
+  // ambient background stars across the whole page
   var bg = document.getElementById('bgStars');
-  var n = 70;
+  var n = 90;
   for (var i = 0; i < n; i++) {
     var s = document.createElement('span');
     s.style.left = (Math.random() * 100) + '%';
-    s.style.top = (Math.random() * 78) + '%';
-    s.style.animationDelay = (Math.random() * 4.2).toFixed(2) + 's';
-    var size = (Math.random() * 1.6 + 1) .toFixed(1);
+    s.style.top = (Math.random() * 100) + '%';
+    s.style.animationDelay = (Math.random() * 4.5).toFixed(2) + 's';
+    var size = (Math.random() * 1.7 + 1).toFixed(1);
     s.style.width = size + 'px';
     s.style.height = size + 'px';
     bg.appendChild(s);
@@ -397,7 +394,6 @@
 
   var amountEl = document.getElementById('amountText');
   var percentEl = document.getElementById('percentText');
-  var skyPercentEl = document.getElementById('skyPercent');
   var fillEl = document.getElementById('fillBar');
 
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -419,7 +415,6 @@
     });
     amountEl.textContent = fmt(0);
     percentEl.textContent = '0%';
-    skyPercentEl.textContent = '0%';
     fillEl.style.width = '0%';
   }
 
@@ -448,7 +443,6 @@
       amountEl.textContent = fmt(amount);
       var pct = Math.round((amount / GOAL) * 100);
       percentEl.textContent = pct + '%';
-      skyPercentEl.textContent = pct + '%';
       fillEl.style.width = pct + '%';
 
       while (litCount < thresholds.length && amount + 0.5 >= thresholds[litCount]) {
